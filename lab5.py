@@ -2,29 +2,11 @@ import csv
 from typing import List, Tuple
 
 
-def unique_two_sum(nums: List[int], target: int) -> List[Tuple[int, int]]:
+def analyse_student_data(
+    filename: str,
+) -> Tuple[int, dict, dict, str, float, List[Tuple[float, str]]]:
     try:
-        num_indices = {}
-        result = set()
-
-        for i, num in enumerate(nums):
-            complement = target - num
-            if complement in num_indices:
-                for index in num_indices[complement]:
-                    result.add((min(index, i), max(index, i)))
-            if num in num_indices:
-                num_indices[num].append(i)
-            else:
-                num_indices[num] = [i]
-
-        return list(result)
-    except:
-        raise Exception("Invalid Input")
-
-
-def analyse_student_data(file_name: str) -> Tuple[int, dict, dict, str, float, tuple]:
-    try:
-        with open(file_name, "r") as f:
+        with open(filename, "r") as f:
             lines = f.readlines()
 
         header = lines[0].strip().split(",")
@@ -36,30 +18,36 @@ def analyse_student_data(file_name: str) -> Tuple[int, dict, dict, str, float, t
         for row in data:
             gender_count[row[0]] += 1
 
-        track_math = {"Track A": [], "Track B": [], "Track C": []}
+        track_math = {}
         for row in data:
+            track_math[row[1]] = track_math.get(row[1], [])
             track_math[row[1]].append(int(row[3]))
+
         average_math_score_by_track = {
-            track: sum(scores) / len(scores) for track, scores in track_math.items()
+            track: round(sum(scores) / len(scores), 2)
+            for track, scores in track_math.items()
         }
 
         education_counts = {
-            "High School": 0,
             "Associate's Degree": 0,
             "Bachelor's Degree": 0,
+            "High School": 0,
         }
+
         for row in data:
             education_counts[row[2]] += 1
         most_common_education = max(education_counts, key=education_counts.get)
 
         reading_scores = [int(row[4]) for row in data]
-        average_reading_score = sum(reading_scores) / len(reading_scores)
+        average_reading_score = round(sum(reading_scores) / len(reading_scores), 2)
 
         max_writing_score_val = max([int(row[5]) for row in data])
+
+        max_writing_scores = []
         for row in data:
             if int(row[5]) == max_writing_score_val:
                 max_writing_score = (max_writing_score_val, row[0])
-                break
+                max_writing_scores.append(max_writing_score)
 
         return (
             total_students,
@@ -67,7 +55,7 @@ def analyse_student_data(file_name: str) -> Tuple[int, dict, dict, str, float, t
             average_math_score_by_track,
             most_common_education,
             average_reading_score,
-            max_writing_score,
+            max_writing_scores,
         )
     except:
         raise Exception("Invalid File/filename")
@@ -98,6 +86,9 @@ def analyse_bank_data(filename: str) -> Tuple[float, int, float]:
                 if description == "Rent":
                     rent_count += 1
 
-        return highest_phone_bill, rent_count, balance
+        return round(highest_phone_bill, 2), rent_count, round(balance, 2)
     except:
         raise Exception("Invalid file/filename")
+
+
+print(analyse_bank_data("bank_transactions_2.csv"))
