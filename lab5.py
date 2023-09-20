@@ -89,6 +89,3 @@ def analyse_bank_data(filename: str) -> Tuple[float, int, float]:
         return round(highest_phone_bill, 2), rent_count, round(balance, 2)
     except:
         raise Exception("Invalid file/filename")
-
-
-print(analyse_bank_data("bank_transactions_2.csv"))
