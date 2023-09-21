@@ -1,91 +1,70 @@
 import csv
+import os
+from statistics import mean
+from collections import Counter, defaultdict
 from typing import List, Tuple
 
 
 def analyse_student_data(
-    filename: str,
+        filename: str,
 ) -> Tuple[int, dict, dict, str, float, List[Tuple[float, str]]]:
-    try:
-        with open(filename, "r") as f:
-            lines = f.readlines()
+    if not os.path.exists(filename):
+        raise Exception('Invalid input')
 
-        header = lines[0].strip().split(",")
-        data = [line.strip().split(",") for line in lines[1:]]
+    csv_data = defaultdict(list)
+    with open(filename, 'r') as f:
+        reader = csv.DictReader(f)
+        for line in reader:
+            for k, v in line.items():
+                # convert data types
+                if k in ('MathScore', 'ReadingScore', 'WritingScore'):
+                    v = int(v)
+                csv_data[k].append(v)
 
-        total_students = len(data)
+    total_num = len(csv_data['Gender'])
 
-        gender_count = {"Male": 0, "Female": 0}
-        for row in data:
-            gender_count[row[0]] += 1
+    gender_count = dict(Counter(csv_data['Gender']))
 
-        track_math = {}
-        for row in data:
-            track_math[row[1]] = track_math.get(row[1], [])
-            track_math[row[1]].append(int(row[3]))
+    track = defaultdict(list)
+    for idx, k in enumerate(csv_data['Track']):
+        track[k].append(csv_data['MathScore'][idx])
+    track = {k: round(mean(v), 2) for k, v in track.items()}
 
-        average_math_score_by_track = {
-            track: round(sum(scores) / len(scores), 2)
-            for track, scores in track_math.items()
-        }
+    parental_education = sorted(Counter(csv_data['ParentalEducation']).items(), key=lambda x: (-x[1], x[0]))[0][0]
 
-        education_counts = {
-            "Associate's Degree": 0,
-            "Bachelor's Degree": 0,
-            "High School": 0,
-        }
+    reading_score = round(mean(csv_data['ReadingScore']), 2)
 
-        for row in data:
-            education_counts[row[2]] += 1
-        most_common_education = max(education_counts, key=education_counts.get)
+    writing_score = []
+    max_writing_score = max(csv_data['WritingScore'])
+    for gender, score in zip(csv_data['Gender'], csv_data['WritingScore']):
+        if score == max_writing_score:
+            writing_score.append((score, gender))
 
-        reading_scores = [int(row[4]) for row in data]
-        average_reading_score = round(sum(reading_scores) / len(reading_scores), 2)
-
-        max_writing_score_val = max([int(row[5]) for row in data])
-
-        max_writing_scores = []
-        for row in data:
-            if int(row[5]) == max_writing_score_val:
-                max_writing_score = (max_writing_score_val, row[0])
-                max_writing_scores.append(max_writing_score)
-
-        return (
-            total_students,
-            gender_count,
-            average_math_score_by_track,
-            most_common_education,
-            average_reading_score,
-            max_writing_scores,
-        )
-    except:
-        raise Exception("Invalid File/filename")
+    return total_num, gender_count, track, parental_education, reading_score, writing_score
 
 
 def analyse_bank_data(filename: str) -> Tuple[float, int, float]:
-    try:
-        highest_phone_bill = 0.0
-        rent_count = 0
-        balance = 0.0
+    if not os.path.exists(filename):
+        raise Exception('Invalid input')
 
-        with open(filename, "r") as file:
-            reader = csv.reader(file)
-            next(reader)
+    csv_data = []
+    with open(filename, 'r') as f:
+        reader = csv.DictReader(f)
+        for line in reader:
+            line['Amount'] = float(line['Amount'])
+            csv_data.append(line)
 
-            for row in reader:
-                transaction_type, amount, description = row
-                amount = float(amount)
+    q1, q2, q3 = 0, 0, 0
+    for row in csv_data:
+        if row['Description'] == 'Phone bill':
+            q1 = max(q1, row['Amount'])
 
-                if transaction_type == "Deposit":
-                    balance += amount
-                elif transaction_type == "Withdrawal":
-                    balance -= amount
+        if row['Description'] == 'Rent':
+            q2 += 1
 
-                if description == "Phone bill" and amount > highest_phone_bill:
-                    highest_phone_bill = amount
+        if row['Type'] == 'Withdrawal':
+            q3 -= row['Amount']
+        elif row['Type'] == 'Deposit'
+            q3 += row['Amount']
 
-                if description == "Rent":
-                    rent_count += 1
-
-        return round(highest_phone_bill, 2), rent_count, round(balance, 2)
-    except:
-        raise Exception("Invalid file/filename")
+    return round(q1, 2), q2, round(q3, 2)
