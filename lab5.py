@@ -30,9 +30,7 @@ def analyse_student_data(
         track[k].append(csv_data["MathScore"][idx])
     track = {k: round(mean(v), 2) for k, v in track.items()}
 
-    parental_education = sorted(
-        Counter(csv_data["ParentalEducation"]).items(), key=lambda x: (-x[1], x[0])
-    )[0][0]
+    parental_education = sorted(Counter(csv_data["ParentalEducation"]).items(), key=lambda x: (-x[1], x[0]))[0][0]
 
     reading_score = round(mean(csv_data["ReadingScore"]), 2)
 
