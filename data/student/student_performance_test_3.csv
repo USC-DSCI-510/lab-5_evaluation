@@ -1,0 +1,6 @@
+Gender,Track,ParentalEducation,MathScore,ReadingScore,WritingScore
+Male,Track B,Bachelor's Degree,65,80,57
+Female,Track B,High School,71,63,45
+Male,Track B,High School,83,40,33
+Female,Track B,Bachelor's Degree,79,46,89
+Female,Track A,Bachelor's Degree,61,54,85
