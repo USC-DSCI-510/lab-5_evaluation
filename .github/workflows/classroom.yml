@@ -18,6 +18,9 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 3
 
+        env:
+          lab_number: 5
+
         outputs:
           bonus_points_gained: ${{ steps.set_bonus_points.outputs.bonus_points_gained }}
           points_gained: ${{ steps.marks.outputs.points_gained }}
@@ -41,13 +44,22 @@ jobs:
             - name: Format with Black
               id: formatting_check
               run: |
-                black lab4.py --check --preview --line-length=120
+                black "lab$lab_number.py" --check --preview --line-length=120
               continue-on-error: true
 
             - name: Lint with Flake8
               id: bonus_pep8_linter_check_flake8
               run: |
-                flake8 lab4.py --max-line-length=120 --ignore=E402,E302,E305,E266,E203,W503,W504,E722,E712,E721,E713,E714,E731
+                flake8 "lab$lab_number.py"
+
+                flake8 "lab$lab_number.py" > linter.log
+                linter_summary=$(cat linter.log)
+                echo "linter_summary<<EOF" >> $GITHUB_ENV
+                echo "$linter_summary" >> $GITHUB_ENV
+                echo "EOF" >> $GITHUB_ENV
+
+                echo "## Linting Summary" >> $GITHUB_STEP_SUMMARY
+                echo "$linter_summary" >> $GITHUB_STEP_SUMMARY
               continue-on-error: true
 
             - name: Set Bonus Points
@@ -72,6 +84,14 @@ jobs:
               run: |
                 # Saving to the log file
                 pytest -v --no-header > output.log
+
+                test_case_summary=$(cat output.log)
+                echo "test_case_summary<<EOF" >> $GITHUB_ENV
+                echo "$test_case_summary" >> $GITHUB_ENV
+                echo "EOF" >> $GITHUB_ENV
+
+                echo "## Test Cases Summary" >> $GITHUB_STEP_SUMMARY
+                echo "$pytest_logs" >> $GITHUB_STEP_SUMMARY
               continue-on-error: true
               timeout-minutes: 1
 
@@ -79,13 +99,6 @@ jobs:
               id: marks
               run: |
                 pytest_logs=$(cat output.log | sed 's/\x1B\[[0-9;]*[JKmsu]//g')
-
-                echo "pytest_logs<<EOF" >> $GITHUB_ENV
-                echo "$pytest_logs" >> $GITHUB_ENV
-                echo "EOF" >> $GITHUB_ENV
-
-                echo "## Test Cases Summary" >> $GITHUB_STEP_SUMMARY
-                echo "$pytest_logs" >> $GITHUB_STEP_SUMMARY
   
                 max_points_possible=$(echo "$pytest_logs" | grep -oP "collected \K\d+")
       
