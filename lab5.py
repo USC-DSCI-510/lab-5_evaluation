@@ -4,6 +4,8 @@ from collections import Counter, defaultdict
 from statistics import mean
 from typing import List, Tuple
 
+import numpy as np
+
 
 def analyse_student_data(
     filename: str,
