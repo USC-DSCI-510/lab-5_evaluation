@@ -53,7 +53,7 @@ jobs:
                 flake8 "lab$lab_number.py"
 
                 flake8 "lab$lab_number.py" > linter.log
-                linter_summary=$(cat linter.log)
+                linter_summary=$(cat linter.log | sed 's/\x1B\[[0-9;]*[JKmsu]//g')
                 echo "linter_summary<<EOF" >> $GITHUB_ENV
                 echo "$linter_summary" >> $GITHUB_ENV
                 echo "EOF" >> $GITHUB_ENV
@@ -84,14 +84,6 @@ jobs:
               run: |
                 # Saving to the log file
                 pytest -v --no-header > output.log
-
-                test_case_summary=$(cat output.log)
-                echo "test_case_summary<<EOF" >> $GITHUB_ENV
-                echo "$test_case_summary" >> $GITHUB_ENV
-                echo "EOF" >> $GITHUB_ENV
-
-                echo "## Test Cases Summary" >> $GITHUB_STEP_SUMMARY
-                echo "$pytest_logs" >> $GITHUB_STEP_SUMMARY
               continue-on-error: true
               timeout-minutes: 1
 
@@ -99,6 +91,13 @@ jobs:
               id: marks
               run: |
                 pytest_logs=$(cat output.log | sed 's/\x1B\[[0-9;]*[JKmsu]//g')
+
+                echo "test_case_summary<<EOF" >> $GITHUB_ENV
+                echo "$pytest_logs" >> $GITHUB_ENV
+                echo "EOF" >> $GITHUB_ENV
+
+                echo "## Test Cases Summary" >> $GITHUB_STEP_SUMMARY
+                echo "$pytest_logs" >> $GITHUB_STEP_SUMMARY
   
                 max_points_possible=$(echo "$pytest_logs" | grep -oP "collected \K\d+")
       
