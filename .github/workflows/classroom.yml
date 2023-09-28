@@ -51,15 +51,6 @@ jobs:
               id: bonus_pep8_linter_check_flake8
               run: |
                 flake8 "lab$lab_number.py"
-
-                flake8 "lab$lab_number.py" > linter.log
-                linter_summary=$(cat linter.log | sed 's/\x1B\[[0-9;]*[JKmsu]//g')
-                echo "linter_summary<<EOF" >> $GITHUB_ENV
-                echo "$linter_summary" >> $GITHUB_ENV
-                echo "EOF" >> $GITHUB_ENV
-
-                echo "## Linting Summary" >> $GITHUB_STEP_SUMMARY
-                echo "$linter_summary" >> $GITHUB_STEP_SUMMARY
               continue-on-error: true
 
             - name: Set Bonus Points
