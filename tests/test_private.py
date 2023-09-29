@@ -103,6 +103,61 @@ DATA_DIR = os.path.join(CURRENT_WORKING_DIR, "data")
                 [(85, "Female"), (85, "Male")],
             ),
         ),
+        (
+            "student_performance_test.csv",
+            (
+                986, 
+                {'Female': 506, 'Male': 480}, 
+                {'Track C': 75.26, 'Track A': 75.38, 'Track B': 74.93}, 
+                "Associate's Degree", 
+                54.81, 
+                [(90, 'Female'), (90, 'Female'), (90, 'Female'), (90, 'Male'), (90, 'Male'), (90, 'Male'), (90, 'Female'), (90, 'Male'), (90, 'Female'), (90, 'Female'), (90, 'Male'), (90, 'Female'), (90, 'Female'), (90, 'Male'), (90, 'Female'), (90, 'Female'), (90, 'Female'), (90, 'Male')],
+            ),
+        ),
+        (
+            "student_performance_test_1.csv",
+            (
+                2000, 
+                {'Male': 991, 'Female': 1009}, 
+                {'Track A': 51.26, 'Track C': 50.41, 'Track B': 50.6}, 
+                'High School', 
+                51.13, 
+                [(100, 'Female'), (100, 'Male'), (100, 'Female'), (100, 'Female'), (100, 'Male'), (100, 'Male'), (100, 'Male'), (100, 'Female'), (100, 'Male'), (100, 'Male'), (100, 'Female'), (100, 'Male'), (100, 'Female'), (100, 'Male'), (100, 'Female'), (100, 'Male'), (100, 'Male'), (100, 'Female'), (100, 'Female'), (100, 'Male'), (100, 'Male'), (100, 'Female')],
+            ),
+        ),
+        (
+           "student_performance_test_2.csv",
+           (
+               321, 
+               {'Male': 153, 'Female': 168}, 
+               {'Track B': 73.96, 'Track A': 73.78}, 
+               "Associate's Degree", 
+               55.73, 
+               [(90, 'Male'), (90, 'Female'), (90, 'Female'), (90, 'Male')],
+            ),
+        ),
+        (
+            "student_performance_test_3.csv",
+            (
+                5, 
+                {'Male': 2, 'Female': 3}, 
+                {'Track B': 74.5, 'Track A': 61}, 
+                "Bachelor's Degree", 
+                56.6, 
+                [(89, 'Female')],
+            ),
+        ),
+        (
+            "student_performance_test_4.csv",
+            (
+                5, 
+                {'Male': 2, 'Female': 3}, 
+                {'Track C': 64.5, 'Track A': 74}, 
+                "Associate's Degree", 
+                21.4, 
+                [(89, 'Male')],
+            ),
+        )
     ],
 )
 @pytest.mark.timeout(0.1)
@@ -117,6 +172,10 @@ def test_analyse_student_data(filename, ans):
         ("bank_transactions.csv", (297.65, 2, 8578.79)),
         ("bank_transactions_1.csv", (1963.97, 23, 39607.43)),
         ("bank_transactions_2.csv", (1814.31, 10, -4042.5)),
+        ("bank_transactions_test.csv", (840.18, 13, 908.32)),
+        ("bank_transactions_test_1.csv", (2399.03, 9, 3380.65)),
+        ("bank_transactions_test_2.csv", (1996.58, 0, 9714.91)),
+        ("bank_transactions_test_3.csv", (0, 0, 44506.44)),
     ],
 )
 @pytest.mark.timeout(0.1)
