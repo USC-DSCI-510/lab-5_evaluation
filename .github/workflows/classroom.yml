@@ -66,7 +66,9 @@ jobs:
               continue-on-error: true
 
             - name: Run the Grading Script
-              run: pytest -v
+              run: | 
+                pytest -v
+                echo "::notice title=Click here to view::Test Suite Logs & Cases Summary"
               continue-on-error: true
               timeout-minutes: 1
 
@@ -83,12 +85,12 @@ jobs:
               run: |
                 pytest_logs=$(cat output.log | sed 's/\x1B\[[0-9;]*[JKmsu]//g')
 
-                echo "test_case_summary<<EOF" >> $GITHUB_ENV
-                echo "$pytest_logs" >> $GITHUB_ENV
-                echo "EOF" >> $GITHUB_ENV
+                # echo "test_case_summary<<EOF" >> $GITHUB_ENV
+                # echo "$pytest_logs" >> $GITHUB_ENV
+                # echo "EOF" >> $GITHUB_ENV
 
-                echo "## Test Cases Summary" >> $GITHUB_STEP_SUMMARY
-                echo "$pytest_logs" >> $GITHUB_STEP_SUMMARY
+                # echo "## Test Cases Summary" >> $GITHUB_STEP_SUMMARY
+                # echo "$pytest_logs" >> $GITHUB_STEP_SUMMARY
   
                 max_points_possible=$(echo "$pytest_logs" | grep -oP "collected \K\d+")
       
