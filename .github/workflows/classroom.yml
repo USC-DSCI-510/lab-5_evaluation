@@ -67,8 +67,8 @@ jobs:
 
             - name: Run the Grading Script
               run: | 
-                pytest -v
-                echo "::notice title=Click here to view::Test Suite Logs & Cases Summary"
+                pytest -v --no-header
+                echo "::warning title=Run the Grading Script::Click the above link to view Test Suite Logs & Cases Summary"
               continue-on-error: true
               timeout-minutes: 1
 
