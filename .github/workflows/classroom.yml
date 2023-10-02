@@ -173,8 +173,8 @@ jobs:
                 echo "|--------------------|-------------------------|------------------------------|" >> $GITHUB_STEP_SUMMARY
                 echo "| Total Points       | $total_points_obtained  | $scaled_max_points_possible  |" >> $GITHUB_STEP_SUMMARY
     
-                echo "> Detailed Feedback - Summary of Test Cases" >> $GITHUB_STEP_SUMMARY
-                echo "> Click on 'Run the Grading Script' Annotation" >> $GITHUB_STEP_SUMMARY
+                echo "#### Detailed Feedback - Summary of Test Cases" >> $GITHUB_STEP_SUMMARY
+                echo " Click on _Run the Grading Script_ under **Annotations**" >> $GITHUB_STEP_SUMMARY
                 
                 echo "### Student Metadata" >> $GITHUB_STEP_SUMMARY
                 echo "| Name                 | Description            |" >> $GITHUB_STEP_SUMMARY
